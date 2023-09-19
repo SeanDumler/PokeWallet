@@ -1,0 +1,52 @@
+﻿@page "/budget/create"
+
+@attribute [Authorize]
+@inject IBudgetService _budgetService
+@inject NavigationManager _navManager
+
+<body class="budget-background-class">
+<h3>Create a Budget</h3>
+<hr/>
+
+@if (errorMessage != null)
+{
+    <h5 class="="text-danger">@errorMessage</h5>
+}
+else
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="form-group">
+                <label>Budget Month:</label>
+                <InputText class="form-control" @bind-Value="model.Month"/>
+            </div>
+            <div class="form-group">
+                <label>Budget Year:</label>
+                <InputNumber class="form-control" @bind-Value="model.Year"/>
+            </div>
+            <div class="form-group">
+                <label>Budget Available Funds:</label>
+                <InputNumber class="form-control" @bind-Value="model.AvailableFunds" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+        </EditForm>
+    </div>
+}
+</body>
+
+@code {
+    private BudgetCreate model = new();
+
+    private string? errorMessage;
+
+    public async Task HandleSubmit()
+    {
+        var isSuccess = await _budgetService.CreateBudget(model);
+        if (isSuccess)
+            _navManager.NavigateTo("/budget");
+        else
+            errorMessage = "Could not ceate your Budget right now. Please try again later.";
+    }
+}

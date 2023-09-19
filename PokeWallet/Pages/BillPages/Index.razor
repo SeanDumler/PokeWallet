@@ -1,0 +1,48 @@
+﻿@page "/bill"
+
+@attribute [Authorize]
+@inject IBillService _billService
+
+<body class="bill-background-class">
+<h3>Bills</h3>
+<a href="/bill/create" class="btn btn-primary">Create a Bill</a>
+<hr/>
+
+@if (Bills.Count() > 0)
+{
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bill in Bills)
+            {
+                <tr>
+                    <td>@bill.Name</td>
+                    <td>$@bill.Cost</td>      
+                    <td>
+                        <a href="/bill/edit/@bill.Id" class="btn btn-success">Edit</a>
+                        <a href="/bill/detail/@bill.Id" class="btn btn-warning">Details</a>                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class"text-danger">Sorry, there are no Bills in the system.</p>
+}
+</body>
+
+@code {
+    private List<BillListItem> Bills = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Bills = await _billService.GetBills();
+    }
+}

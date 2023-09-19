@@ -1,0 +1,50 @@
+﻿@page "/income/detail/{IncomeId:int}"
+
+@attribute [Authorize]
+@inject IIncomeService _incomeService
+
+<body class="income-background-class">
+<h3>Detail</h3>
+<hr/>
+
+@if(incomeDetail is null)
+{
+    <p class="text-warning">Sorry, there isn't any information available.'</p>
+}
+else
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Income #@incomeDetail.Id</span>
+                <span class="text-muted">@incomeDetail.Budget.Month</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">@incomeDetail.Month</h4>
+                <p class="card-text">@incomeDetail.Year</p>
+                <h5 class="card-text">Income:</h5>
+                <p class="card-text">$@incomeDetail.JobIncome</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href="/income/edit/@incomeDetail.Id" class="btn btn-success">Edit</a>
+                <a href="/income" class="btn btn-secondary">Go Back</a>
+                <a href="/income/delete/@incomeDetail.Id" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+}
+</body>
+
+@code {
+    [Parameter]
+    public int IncomeId { get; set; }
+
+    public IncomeDetail? incomeDetail { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        incomeDetail = await _incomeService.GetIncome(IncomeId);
+    }
+}

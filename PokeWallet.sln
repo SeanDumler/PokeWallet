@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeWallet", "PokeWallet\PokeWallet.csproj", "{67DFDE50-3647-4D83-AFFC-63A042C8C178}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeWallet.Data", "PokeWallet.Data\PokeWallet.Data.csproj", "{0430EEE3-70FF-477E-8A3E-9E85AA9A2001}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeWallet.Models", "PokeWallet.Models\PokeWallet.Models.csproj", "{34B07FD5-C8BD-49A2-BF5F-6E2FAFAB21CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeWallet.Services", "PokeWallet.Services\PokeWallet.Services.csproj", "{FF3F9786-4AF8-4382-BA8B-C21FC407FB83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67DFDE50-3647-4D83-AFFC-63A042C8C178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67DFDE50-3647-4D83-AFFC-63A042C8C178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67DFDE50-3647-4D83-AFFC-63A042C8C178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67DFDE50-3647-4D83-AFFC-63A042C8C178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0430EEE3-70FF-477E-8A3E-9E85AA9A2001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0430EEE3-70FF-477E-8A3E-9E85AA9A2001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0430EEE3-70FF-477E-8A3E-9E85AA9A2001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0430EEE3-70FF-477E-8A3E-9E85AA9A2001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34B07FD5-C8BD-49A2-BF5F-6E2FAFAB21CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34B07FD5-C8BD-49A2-BF5F-6E2FAFAB21CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34B07FD5-C8BD-49A2-BF5F-6E2FAFAB21CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34B07FD5-C8BD-49A2-BF5F-6E2FAFAB21CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF3F9786-4AF8-4382-BA8B-C21FC407FB83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF3F9786-4AF8-4382-BA8B-C21FC407FB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF3F9786-4AF8-4382-BA8B-C21FC407FB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF3F9786-4AF8-4382-BA8B-C21FC407FB83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31BDE1A9-EE67-477B-80EF-C59BDFCDB34C}
+	EndGlobalSection
+EndGlobal

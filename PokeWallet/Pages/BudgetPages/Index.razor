@@ -1,0 +1,49 @@
+﻿@page "/budget"
+
+@inject IBudgetService _budgetService
+
+<body class="budget-backgorund-class">
+<h3>Budget</h3>
+<a href="/budget/create" class="btn btn-primary">Create a Budget</a>
+<hr />
+
+@if(Budgets.Count() > 0)
+{
+    <table class="table table-stripped">
+        <thead>
+            <tr>                
+                <th>Month</th>
+                <th>Year</th>
+                <th>Available Funds</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var budget in Budgets)
+            {
+                <tr>
+                    <td>@budget.Month</td>
+                    <td>@budget.Year</td>
+                    <td>$@budget.AvailableFunds</td>
+                    <td>
+                        <a href="/budget/edit/@budget.Id" class="btn btn-success">Edit</a>
+                        <a href="/budget/detail/@budget.Id" class="btn btn-warning">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-danger">Sorry, there is not a budget available.</p>
+}
+</body>
+
+@code {
+    public List<BudgetListItem> Budgets = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Budgets = await _budgetService.GetBudgets();
+    }
+}

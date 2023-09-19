@@ -1,0 +1,86 @@
+﻿@page "/income/edit/{IncomeId:int}"
+
+@attribute [Authorize]
+@inject IIncomeService _incomeService
+@inject IBudgetService _budgetService
+@inject NavigationManager _navManager
+
+<body class="income-background-class">
+<h3>Edit Income</h3>
+<hr/>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label>Month</label>
+            <InputText class="form-control" @bind-Value="model.Month" />
+        </div>
+        <div class="form-group">
+            <label>Year</label>
+            <InputNumber class="form-control" @bind-Value="model.Year" />
+        </div>
+        <div class="form-group">
+            <label>Income</label>
+            <InputNumber class="form-control" @bind-Value="model.JobIncome" />
+        </div>
+        @if (Budgets == null)
+        {
+            <p>No Available Budgets</p>
+        }
+        else
+        {
+            <InputSelect @bind-Value="model.BudgetId" class="form-select">
+                <option value="0" disabled="disabled" selected>-- Select Budget --</option>
+                @foreach (var budget in Budgets)
+                {
+                    <option value="@budget.Id">@budget.Month</option>
+                }
+            </InputSelect>
+        }
+        <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+            <a href="/income" class="btn btn-secondary mt-5">Go Back</a>
+    </EditForm>
+}
+</body>
+
+@code {
+    [Parameter]
+    public int IncomeId { get; set; }
+    private IncomeEdit model = new();
+    private IncomeDetail _incomeDetail = new();
+
+    private List<BudgetListItem>? Budgets;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _incomeDetail = await _incomeService.GetIncome(IncomeId);
+
+        if(_incomeDetail != null)
+        {
+            model.Id = _incomeDetail.Id;
+            model.Month = _incomeDetail.Month;
+            model.Year = _incomeDetail.Year;
+            model.JobIncome = _incomeDetail.JobIncome;
+        }
+
+        Budgets = await _budgetService.GetBudgets();
+    }
+
+    public async Task HandleSubmit()
+    {
+        var isSuccess = await _incomeService.UpdateIncome(model);
+        if (isSuccess)
+            _navManager.NavigateTo("/income");
+        else
+            errorMessage = "Could not update your income. Please try again.";
+    }
+}

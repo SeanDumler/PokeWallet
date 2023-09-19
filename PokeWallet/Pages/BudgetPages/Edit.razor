@@ -1,0 +1,71 @@
+﻿@page "/budget/edit/{BudgetId:int}"
+
+@attribute [Authorize]
+@inject IBudgetService _budgetService
+@inject NavigationManager _navManager
+
+<body class="budget-background-class">
+<h3>Edit</h3>
+<hr/>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label>Month</label>
+            <InputText class="form-control" @bind-Value="model.Month" />
+        </div>
+        <div class="form-group">
+            <label>Year</label>
+            <InputNumber class="form-control" @bind-Value="model.Year" />
+        </div>
+        <div class="form-group">
+            <label>Available Funds</label>
+            <InputNumber class="form-control" @bind-Value="model.AvailableFunds" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+        <a href="/budget" class="btn btn-secondary btn-block mt-5">Go Back</a>
+    </EditForm>
+}
+</body>
+
+@code {
+    [Parameter]
+    public int BudgetId { get; set; }
+    private BudgetEdit model = new();
+    private BudgetDetail _budgetDetail = new();
+
+    private List<BudgetListItem>? Budgets;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _budgetDetail = await _budgetService.GetBudget(BudgetId);
+
+        if(_budgetDetail != null)
+        {
+            model.Id = _budgetDetail.Id;
+            model.Month = _budgetDetail.Month;
+            model.Year = _budgetDetail.Year;
+            model.AvailableFunds = _budgetDetail.AvailableFunds;
+        }
+
+        Budgets = await _budgetService.GetBudgets();
+    }
+
+    public async Task HandleSubmit()
+    {
+        var isSuccess = await _budgetService.UpdateBudget(model);
+        if (isSuccess)
+            _navManager.NavigateTo("/budget");
+        else
+            errorMessage = "Could not update your budget. Please try again.";
+    }
+}

@@ -1,0 +1,82 @@
+﻿@page "/bill/edit/{BillId:int}"
+
+@attribute [Authorize]
+@inject IBillService _billService
+@inject IBudgetService _budgetService
+@inject NavigationManager _navManager
+
+<body class="bill-background-class">
+<h3>Edit Bill</h3>
+<hr/>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label>Name</label>
+            <InputText class="form-control" @bind-Value="model.Name" />
+        </div>
+        <div class="form-group">
+            <label>Cost</label>
+            <InputNumber class="form-control" @bind-Value="model.Cost" />
+        </div>
+        @if (Budgets == null)
+        {
+            <p>No Available Budgets</p>
+        }
+        else
+        {
+            <InputSelect @bind-Value="model.BudgetId" class="form-select">
+                <option value="0" disabled="disabled" selected>-- Select Budget --</option>
+                @foreach (var budget in Budgets)
+                {
+                    <option value="@budget.Id">@budget.Month</option>
+                }
+            </InputSelect>
+        }
+        <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+        <a href="/bill" class="btn btn-secondary btn-block mt-5">Go Back</a>
+    </EditForm>
+}
+</body>
+
+
+@code {
+    [Parameter]
+    public int BillId { get; set; }
+    private BillEdit model = new();
+    private BillDetail _billDetail = new();
+
+    private List<BudgetListItem>? Budgets;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _billDetail = await _billService.GetBill(BillId);
+
+        if (_billDetail != null)
+        {
+            model.Id = _billDetail.Id;
+            model.Name = _billDetail.Name;
+            model.Cost = _billDetail.Cost;
+        }
+
+        Budgets = await _budgetService.GetBudgets();
+    }
+
+    public async Task HandleSubmit()
+    {
+        var isSuccess = await _billService.UpdateBill(model);
+        if (isSuccess)
+            _navManager.NavigateTo("/bill");
+        else
+            errorMessage = "Couldnot update your bill. Please try again.";
+    }
+}

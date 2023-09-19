@@ -1,0 +1,50 @@
+﻿@page "/income"
+
+@attribute [Authorize]
+@inject IIncomeService _incomeService
+
+<body class="income-background-class">
+<h3>Income</h3>
+<a href="/income/create" class="btn btn-primary">Create an Income</a>
+<hr/>
+
+@if (Income.Count() > 0)
+{
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Income</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var income in Income)
+            {
+                <tr>
+                    <td>@income.Month</td>
+                    <td>@income.Year</td>
+                    <td>$@income.JobIncome</td>
+                    <td>
+                        <a href="/income/edit/@income.Id" class="btn btn-success">Edit</a>
+                        <a href="/income/detail/@income.Id" class="btn btn-warning">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class"text-danger">Sorry, there are no Incomes in the system.</p>
+}
+</body>
+
+@code {
+    private List<IncomeListItem> Income = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Income = await _incomeService.GetIncomes();
+    }
+}

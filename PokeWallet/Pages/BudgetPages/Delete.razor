@@ -1,0 +1,62 @@
+﻿@page "/budget/delete/{BudgetId:int}"
+
+@inject IBudgetService _budgetService
+@inject NavigationManager _navManager
+
+<body class="budget-background-class">
+<h3>Delete a Budget</h3>
+<h4 class="text-danger">Are you sure you want to delete?</h4>
+
+@if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+@if (budgetDetail is null)
+{
+    <p class="text-warning">Sorry, there is nothing to delete.</p>
+}
+else
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Budget #@budgetDetail.Id</span>
+                <span class="text-muted">@budgetDetail.Month</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">@budgetDetail.Year</h4>
+                <p class="card-text">$@budgetDetail.AvailableFunds</p>
+            </div>
+        </div>
+    </div>
+
+    <EditForm Model="@budgetDetail" OnValidSubmit="@DeleteBill">
+        <button type="submit" class="btn btn-danger m-3">Delete</button>
+    </EditForm>
+}
+</body>
+
+@code {
+    [Parameter]
+    public int BudgetId { get; set; }
+
+    public BudgetDetail? budgetDetail { get; set; }
+    private string? errorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        budgetDetail = await _budgetService.GetBudget(BudgetId);
+    }
+
+    public async Task DeleteBill()
+    {
+        var isSuccess = await _budgetService.DeleteBudget(BudgetId);
+        if (isSuccess)
+            _navManager.NavigateTo("/budget");
+        else
+        {
+            errorMessage = "Failed to delete. Please try again.";
+        }
+    }
+}

@@ -1,0 +1,69 @@
+﻿@page "/bill/create"
+
+@attribute [Authorize]
+@inject IBillService _billService
+@inject IBudgetService _budgetService
+@inject NavigationManager _navManager
+
+<body class="bill-background-class">
+<h3>Create a Bill</h3>
+<hr/>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">
+            <label>Name</label>
+            <InputText class="form-control" @bind-Value="model.Name"/>
+        </div>
+        <div class="form-group">
+            <label>Cost</label>
+            <InputNumber class="form-control" @bind-Value="model.Cost"/>
+        </div>
+        @if(Budgets == null)
+        {
+            <p>No Available Budgets</p>
+        }
+        else
+        {
+            <InputSelect @bind-Value="model.BudgetId" class="form-select">
+                <option value="0" disabled="disabled" selected>-- Select Budget --</option>
+                @foreach (var budget in Budgets)
+                {
+                    <option value="@budget.Id">@budget.Month</option>
+                }
+            </InputSelect>
+        }
+        <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+    </EditForm>
+}
+</body>
+
+
+@code {
+    private BillCreate model = new();
+
+    private List<BudgetListItem>? Budgets;
+
+    private string? errorMessage;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Budgets = await _budgetService.GetBudgets();
+    }
+
+    public async Task HandleSubmit()
+    {
+        var isSuccess = await _billService.CreateBill(model);
+        if (isSuccess)
+            _navManager.NavigateTo("/bill");
+        else
+            errorMessage = "Could not create a bill right now. Please try again later.";
+    }
+}

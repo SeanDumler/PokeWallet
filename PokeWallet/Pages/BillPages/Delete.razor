@@ -1,0 +1,63 @@
+﻿@page "/bill/delete/{BillId:int}"
+
+@inject IBillService _billService
+@inject NavigationManager _navManager
+
+<body class="bill-background-class">
+<h3>Delete a Bill</h3>
+<h4 class="text-danger">Are you sure you want to delete?</h4>
+
+@if(errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+@if (billDetail is null)
+{
+    <p class="text-warning">Sorry, there is nothing to delete.</p>
+}
+else
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Bill #@billDetail.Id</span>
+                <span class="text-muted">@billDetail.Budget.Month</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">@billDetail.Name</h4>
+                <p class="card-text">@billDetail.Cost</p>
+            </div>
+        </div>        
+    </div>
+
+    <EditForm Model="@billDetail" OnValidSubmit="@DeleteBill">
+        <button type="submit" class="btn btn-danger m-3">Delete</button>
+    </EditForm>
+}
+</body>
+
+
+@code {
+    [Parameter]
+    public int BillId { get; set; }
+
+    public BillDetail? billDetail { get; set; }
+    private string? errorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        billDetail = await _billService.GetBill(BillId);
+    }
+
+    public async Task DeleteBill()
+    {
+        var isSuccess = await _billService.DeleteBill(BillId);
+        if (isSuccess)
+            _navManager.NavigateTo("/bill");
+        else
+        {
+            errorMessage = "Failed to delete. Please try again.";
+        }
+    }
+}

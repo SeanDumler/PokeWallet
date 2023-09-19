@@ -1,0 +1,63 @@
+﻿@page "/income/delete/{IncomeId:int}"
+
+@inject IIncomeService _incomeService
+@inject NavigationManager _navManager
+
+<body class="income-background-class">
+<h3>Delete an Income</h3>
+<h4 class="text-danger">Are you sure you want to delete?</h4>
+
+@if(errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+@if (incomeDetail is null)
+{
+    <p class="text-warning">Sorry, there is nothing to delete.</p>
+}
+else
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Income #@incomeDetail.Id</span>
+                <span class="text-muted">@incomeDetail.Budget.Month</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">@incomeDetail.Month</h4>
+                <h5 class="card-text">@incomeDetail.Year</h5>
+                <p class="card-text">$@incomeDetail.JobIncome</p>
+            </div>
+        </div>
+    </div>
+
+    <EditForm Model="@incomeDetail" OnValidSubmit="@DeleteIncome">
+        <button type="submit" class="btn btn-danger m-3">Delete</button>
+    </EditForm>
+}
+</body>
+
+@code {
+    [Parameter]
+    public int IncomeId { get; set; }
+
+    public IncomeDetail? incomeDetail { get; set; }
+    private string? errorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        incomeDetail = await _incomeService.GetIncome(IncomeId);
+    }
+
+    public async Task DeleteIncome()
+    {
+        var isSuccess = await _incomeService.DeleteIncome(IncomeId);
+        if (isSuccess)
+            _navManager.NavigateTo("/income");
+        else
+        {
+            errorMessage = "Failed to delete. Please try again.";
+        }
+    }
+}
